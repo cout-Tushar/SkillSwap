@@ -2,110 +2,211 @@
 
 import { signIn, signOut, useSession } from "next-auth/react"
 import { useForm, SubmitHandler } from "react-hook-form"
+import { LogOut, Mail, Lock, Github, ArrowRight } from "lucide-react"
+import { useState } from "react"
+
+interface Inputs {
+  email: string
+  password: string
+}
 
 export default function LoginPage() {
   const { data: session } = useSession()
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Inputs>()
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setIsLoading(true)
     await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: true,
       callbackUrl: "/",
     })
+    setIsLoading(false)
   }
 
   if (session) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-10 flex flex-col items-center gap-6 shadow-2xl w-full max-w-sm">
-          {/* Avatar */}
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white text-2xl font-bold select-none">
-            {session.user?.email?.[0].toUpperCase()}
-          </div>
+      <div className="min-h-screen bg-black flex items-center justify-center px-4 py-20">
+        <style jsx>{`
+          @keyframes slideInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
 
-          <div className="text-center">
-            <p className="text-gray-400 text-sm">Signed in as</p>
-            <p className="text-white font-semibold mt-1 truncate max-w-xs">
-              {session.user?.email}
+          .animate-slide-in-up {
+            animation: slideInUp 0.6s ease-out forwards;
+          }
+        `}</style>
+
+        <div className="w-full max-w-sm">
+          <div className="glass-effect relative rounded-3xl p-10 shadow-2xl border border-red-900/30 bg-white/5 backdrop-blur-xl animate-slide-in-up">
+            {/* Avatar */}
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white text-3xl font-bold select-none mx-auto mb-6 shadow-lg shadow-red-900/40">
+              {session.user?.email?.[0].toUpperCase()}
+            </div>
+
+            <div className="text-center mb-8">
+              <p className="text-gray-400 text-sm">Signed in as</p>
+              <p className="text-white font-semibold mt-2 truncate max-w-xs">
+                {session.user?.email}
+              </p>
+            </div>
+
+            <button
+              onClick={() => signOut()}
+              className="w-full bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white border border-red-600 hover:border-red-500 transition-all duration-300 rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-red-900/30 hover:shadow-red-900/50 hover:-translate-y-0.5"
+            >
+              <LogOut size={18} />
+              Sign out
+            </button>
+
+            <p className="text-center text-gray-500 text-xs mt-6">
+              Come back soon! 👋
             </p>
           </div>
-
-
-
-          <button
-            onClick={() => signOut()}
-            className="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 hover:border-gray-500 transition-all duration-200 rounded-xl py-3 text-sm font-medium"
-          >
-            Sign out
-          </button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
+    <div className="min-h-screen flex items-center justify-center px-4 py-20 relative">
 
+
+      {/* Animated Background Glows */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-700/15 blur-3xl rounded-full animate-float pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-700/10 blur-3xl rounded-full animate-float pointer-events-none" style={{ animationDelay: "1s" }} />
+
+      <div className="w-full max-w-sm relative z-10">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 mx-auto mb-4" />
-          <h1 className="text-white text-2xl font-bold tracking-tight">Welcome back</h1>
-          <p className="text-gray-500 text-sm mt-1">Sign in to your account</p>
+        <div className="text-center mb-10 animate-slide-in-up">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-red-800 mx-auto mb-6 shadow-lg shadow-red-900/40" />
+          <h1 className="text-white text-3xl font-bold tracking-tight">Welcome back</h1>
+          <p className="text-gray-400 text-sm mt-2">Sign in to your SkillSwap account</p>
         </div>
 
         {/* Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl flex flex-col gap-4">
-
-          {/* GitHub */}
+        <div className="glass-effect rounded-3xl p-8 shadow-2xl flex flex-col gap-5 animate-slide-in-up" style={{ animationDelay: "0.1s" }}>
+          {/* GitHub Button */}
           <button
             onClick={() => signIn("github")}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 transition-all duration-200 rounded-xl py-3 text-sm font-semibold"
+            className="w-full flex items-center justify-center gap-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 hover:border-white/40 transition-all duration-300 rounded-xl py-3 text-sm font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-            </svg>
+            <Github size={18} />
             Continue with GitHub
           </button>
 
+      
+
           {/* Divider */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-gray-800" />
-            <span className="text-gray-600 text-xs">or</span>
-            <div className="flex-1 h-px bg-gray-800" />
+          <div className="flex items-center gap-3 my-2">
+            <div className="flex-1 h-px bg-gradient-to-r from-red-900/0 via-red-900/30 to-red-900/0" />
+            <span className="text-gray-500 text-xs font-medium">OR</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-red-900/0 via-red-900/30 to-red-900/0" />
           </div>
 
-          {/* Credentials */}
-          <form action=""></form>
+          {/* Email Input */}
+          <div className="relative">
+            <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            <input
+              type="email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address",
+                },
+              })}
+              placeholder="Enter your email"
+              className="input-field w-full bg-gray-900/40 border border-red-900/20 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+            />
+            {errors.email && (
+              <p className="text-red-400 text-xs mt-2">{errors.email.message}</p>
+            )}
+          </div>
 
+          {/* Password Input */}
+          <div className="relative">
+            <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            <input
+              type="password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
+              placeholder="Enter your password"
+              className="input-field w-full bg-gray-900/40 border border-red-900/20 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+            />
+            {errors.password && (
+              <p className="text-red-400 text-xs mt-2">{errors.password.message}</p>
+            )}
+          </div>
+
+          {/* Remember & Forgot */}
+          <div className="flex items-center justify-between text-xs">
+            <label className="flex items-center gap-2 text-gray-400 hover:text-gray-300 cursor-pointer transition">
+              <input type="checkbox" className="w-4 h-4 rounded border-red-900/30 accent-red-600" />
+              Remember me
+            </label>
+            <a href="#" className="text-gray-400 hover:text-red-400 transition">
+              Forgot password?
+            </a>
+          </div>
+
+          {/* Submit Button */}
           <form onSubmit={handleSubmit(onSubmit)}>
-            <input type="email" {...register("email", { required: true })} placeholder="Email" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" />
-            <input type="password" {...register("password", { required: true })} placeholder="Password" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4" />
-
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white transition-all duration-200 rounded-xl py-3 text-sm font-semibold shadow-lg shadow-blue-950"
+              disabled={isLoading}
+              className="btn-primary w-full text-white rounded-xl py-3 text-sm font-semibold shadow-lg shadow-red-900/30 hover:shadow-red-900/50 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all"
             >
-              Sign in with Credentials
+              {isLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  Sign in with Email
+                  <ArrowRight size={16} />
+                </>
+              )}
             </button>
-
           </form>
-
-
         </div>
 
-        <p className="text-center text-gray-600 text-xs mt-6">
+        {/* Footer */}
+        <p className="text-center text-gray-500 text-xs mt-8">
+          Don't have an account?{" "}
+          <a href="/signup" className="text-red-400 hover:text-red-300 font-semibold transition">
+            Sign up
+          </a>
+        </p>
+        <p className="text-center text-gray-600 text-xs mt-4">
           By signing in, you agree to our{" "}
-          <span className="text-gray-400 hover:text-white cursor-pointer transition-colors">Terms</span>{" "}
+          <a href="#" className="text-gray-400 hover:text-red-400 transition">
+            Terms
+          </a>{" "}
           and{" "}
-          <span className="text-gray-400 hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
+          <a href="#" className="text-gray-400 hover:text-red-400 transition">
+            Privacy Policy
+          </a>
         </p>
       </div>
     </div>

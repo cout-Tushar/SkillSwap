@@ -1,34 +1,55 @@
-import mongoose, {Schema,models} from 'mongoose';
+import mongoose, { Schema, models } from 'mongoose';
 
-const UserSchema=new Schema({
-    name:{
-        type:String,
-        Required:true,   
-    },
-    email:{
-        type:String,
-        Required:true,
-        unique:true,
-    },
-    password:{
-        type:String,
-        Required:true, },
-    skilsOffered:{
-        type:[String],
-        Required:true, },
-    skilsNeeded:{
-        type:[String],
-    },
-    rating:{
+interface skillOffered {
+  skill: string;
+  level: string;
+  skillId: string;
+}
 
-        type:Number,
-        default:0,
-    },
-    bio:{
-        type:String,
-        Required:true,
-    }
-    
+const SkillSchema = new Schema<skillOffered>({
+  skill: {
+    type: String,
+  },
+  level: {
+    type: String,
+    enum: ["beginner", "intermediate", "advanced"],
+  },
+  skillId: {
+    type: String,
+    unique: true
+  }
+});
+
+const UserSchema = new Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  skillsOffered: {
+    type: [SkillSchema],
+    default: []
+  },
+  skillsNeeded: {
+    type: [SkillSchema],
+    default: []
+  },
+  rating: {
+    type: Number,
+    default: 0
+  },
+  bio: {
+    type: String,
+    default: ""
+  }
 });
 
 export default models.User || mongoose.model('User', UserSchema);
