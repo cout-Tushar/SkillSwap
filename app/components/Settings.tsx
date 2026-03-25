@@ -13,6 +13,7 @@ import { text } from 'stream/consumers';
 const Settings = ({email}:{email:string}) => {
   const { activeTab } = useContext(MyContext);
   const [bio, setBio] = useState("");
+  const [name,setname]=useState("")
 
   useEffect(() => {
     const fetchBio = async () => {
@@ -20,6 +21,7 @@ const Settings = ({email}:{email:string}) => {
       const data = await req.json();
       // Update the bio state with the fetched data
       setBio(data.bio);
+      setname(data.name);
     };
     fetchBio();
   }, [email]);
@@ -30,7 +32,7 @@ const Settings = ({email}:{email:string}) => {
     const req = await fetch("/api/updateBio?email="+ email, {
       method: "POST",
       headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({bio})
+      body: JSON.stringify({bio,name})
     })
     
   }
@@ -62,6 +64,18 @@ const Settings = ({email}:{email:string}) => {
                         />
                       </div>
                       <div>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Name
+                        </label>
+                        <textarea
+                          id="name"
+                          value={name}
+                          onChange={(e)=>setname(e.target.value)}
+                          placeholder="Tell others about yourself..."
+                          className="w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-red-900/20 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 resize-none"
+                          rows={1}
+                        />
+
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                           Bio
                         </label>

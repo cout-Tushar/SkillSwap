@@ -43,9 +43,9 @@ const SignedIN_header = () => {
           <a href="#explore" className="hover:text-white transition duration-300">
             Explore
           </a>
-          <a href="#how" className="hover:text-white transition duration-300">
-            How It Works
-          </a>
+           <Link href="/Users" className="hover:text-white transition duration-300">
+             Skill Market
+          </Link>
           <Link href="/dashboard" className="hover:text-white transition duration-300">
             Dashboard
           </Link>
