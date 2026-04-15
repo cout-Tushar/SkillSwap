@@ -34,12 +34,7 @@ export async function POST(req: Request) {
     const email = url.searchParams.get("email");
     const { bio, name } = await req.json();
 
-    if (!email || !bio || !name) {
-      return NextResponse.json(
-        { message: "Email, bio and name are required" },
-        { status: 400 }
-      );
-    }
+  
 
     const user = await User.findOneAndUpdate(
       { email },

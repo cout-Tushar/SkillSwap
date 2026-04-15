@@ -29,7 +29,7 @@ const DashboardPage = () => {
         <main
           className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'md:ml' : ''
             }`}>
-          <div className="p-6 md:p-8 max-w-7xl">
+          <div className="p-6 md:p-8 max-w-7xl mt-10">
             <Overview email={email} />
             <Skills email={email} />
             <Matches />
