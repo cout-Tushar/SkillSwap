@@ -32,7 +32,7 @@ const DashboardPage = () => {
           <div className="p-6 md:p-8 max-w-7xl mt-10">
             <Overview email={email} />
             <Skills email={email} />
-            <Matches />
+            <Matches email={email} />
             <Messsages />
             <Settings email={email} />
           </div>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from "next/navigation";
 import { BookOpen, Users, CheckCircle, MessageSquare, Bell, Star } from "lucide-react";
 import { MyContext } from "../context/MyContext";
 import { useContext } from "react";
@@ -177,7 +176,7 @@ const Overview = ({ email }: { email: string }) => {
 
                     <div className="flex-1">
                       <p className="font-semibold text-white">{match.name}</p>
-                      <p className="text-gray-400 text-sm">{match.skill[0]}</p>
+                      <p className="text-gray-400 text-sm">{match.skill?.join(", ")}</p>
                       <div className="flex items-center gap-2 mt-2">
                         <div className="flex items-center gap-1">
                           <Star size={14} className="fill-yellow-500 text-yellow-500" />

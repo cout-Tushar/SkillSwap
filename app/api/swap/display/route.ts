@@ -29,40 +29,32 @@ export async function GET(req: Request) {
 
   const userId = user._id.toString();
 
-  // get all requests involving this user
+  // ✅ ONLY requests where current user is RECEIVER
   const requests = await RequestModel.find({
-    $or: [
-      { sender_id: userId },
-      { receiver_id: userId }
-    ]
+    receiver_id: userId
   });
 
-  // collect all other user ids
-  const otherUserIds = requests.map((r) =>
-    r.sender_id === userId ? r.receiver_id : r.sender_id
-  );
+  // ✅ collect sender ids
+  const senderIds = requests.map((r) => r.sender_id);
 
-  // fetch those users
-  const users = await User.find({ _id: { $in: otherUserIds } });
+  // ✅ fetch sender users
+  const users = await User.find({ _id: { $in: senderIds } });
 
-  // map userId -> user
+  // ✅ map senderId -> user
   const userMap = new Map(
     users.map((u) => [u._id.toString(), u])
   );
 
-  // build Match[]
+  // ✅ build Match[]
   const matches: Match[] = requests.map((r) => {
-    const otherUserId =
-      r.sender_id === userId ? r.receiver_id : r.sender_id;
-
-    const otherUser = userMap.get(otherUserId);
+    const sender = userMap.get(r.sender_id);
 
     return {
       id: r._id.toString(),
-      name: otherUser?.name || "Unknown",
-      avatar: otherUser?.avatar || "", // adjust field name if different
-      skill: r.skillOffered, // or skillNeeded based on your logic
-      rating: otherUser?.rating || 0, // fallback if not present
+      name: sender?.name || "Unknown",
+      avatar: sender?.avatar || "",
+      skill: r.skillOffered,
+      rating: sender?.rating || 0,
       status:
         r.status === "accepted"
           ? "active"
